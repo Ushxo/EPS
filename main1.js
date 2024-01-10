@@ -14,7 +14,7 @@ client.on('ready', (c) => {
     console.log("Im here.")
 });
 
-//Message test
+//Message Salut
 const repliedMessages = new Set();
 
 client.on('messageCreate', (message) => {
