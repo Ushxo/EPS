@@ -21,9 +21,11 @@ client.on('messageCreate', (message) => {
     if (message.author.bot || repliedMessages.has(message)) {
         return;
     }
+    
 
-    if (message.content.toLowerCase() === 'hello') {
+    if (message.content.toLowerCase() === `hello epsbot`) {
         const username = message.member.displayName;
+        
 
         message.reply(`Salut ${username}!`);
 
