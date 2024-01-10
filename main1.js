@@ -35,4 +35,6 @@ client.on('messageCreate', (message) => {
     }
 });
 
+//polls
+
 client.login(process.env.TOKEN);
