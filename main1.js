@@ -103,6 +103,7 @@ client.on('messageCreate', (message) => {
     }
 
 });
+//leagueperso
 client.on('messageCreate', async message => {
     if (message.content === '+league') {
         // Send the poll message
@@ -111,16 +112,16 @@ client.on('messageCreate', async message => {
         // Add the checkmark reaction
         await pollMessage.react('✅');
     
-        // Create a filter to check for 1 reaction
-        const filter = (reaction, user) => reaction.emoji.name === '✅' && !user.bot;
+        // Create a filter to check for 2 reactions
+        const filter = (reaction, user) => reaction.emoji.name === '✅';
         
         // Set up a collector for reactions
-        const collector = pollMessage.createReactionCollector(filter, { time: 60000  }); // Adjust the time as needed (in milliseconds)
+        const collector = pollMessage.createReactionCollector(filter); // Adjust the time as needed (in milliseconds)
     
         // Listen for reactions
-        collector.on('collect', (reaction, user) => {
-            if (pollMessage.reactions.cache.get('✅').count === 2) {
-                // Ping the user who started the poll
+        collector.on('messageCollect', (reaction, user) => {
+            const reactionCount = pollMessage.reactions.cache.get('✅').count;
+            if (reactionCount === 2) {
                 message.channel.send(`${message.author}, la perso est on!`);
                 // Stop the collector to prevent further reactions
                 collector.stop();
@@ -128,14 +129,22 @@ client.on('messageCreate', async message => {
         });
     
         // Listen for the end of the collector (time limit reached)
-        collector.on('end', collected => {
-            if (collected.size < 1) {
+        collector.on('messageEnd', collected => {
+            if (collected.size < 2) { 
                 message.channel.send('Pas assez de réactions :(');
             }
         });
     }
+    
+    
 });
 
-
+//nombre de personnes
+client.on('guildMemberAdd', async(member) => {
+    await client.channels.cache.get('1194851271052632135').setName(`🌍 Total de personnes: ${member.guild.memberCount}`)
+})
+client.on('guildMemberRemove', async(member) => {
+    await client.channels.cache.get('1194851271052632135').setName(`🌍 Total de personnes: ${member.guild.memberCount}`)
+})
 
 client.login(process.env.TOKEN);
