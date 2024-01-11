@@ -7,13 +7,27 @@ const client = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.GuildMessageReactions,
+        IntentsBitField.Flags.GuildBans
 
     ]
 });
+
+
+
+
+
+
+
+
 //Bot en ligne
 client.on('ready', (c) => {
     console.log("Im here.")
 });
+
+
+
+
+
 
 //Message Salut
 const repliedMessages = new Set();
@@ -34,6 +48,12 @@ client.on('messageCreate', (message) => {
         repliedMessages.add(message);
         return;
     }
+
+
+
+
+
+
     //temps
     if(message.content == '+time') {
         let date = new Date();
@@ -41,6 +61,16 @@ client.on('messageCreate', (message) => {
         let content = 'Il est ' + date.getHours() + 'h:' + date.getMinutes() + 'm' + date.getSeconds() + 's';
         message.channel.send(content)
     }
+
+
+
+
+
+
+
+
+
+
 
     //date
     if(message.content == '+date') {
@@ -97,13 +127,23 @@ client.on('messageCreate', (message) => {
         }
     }
 
+
+
+
+
+
+
+
+
     //help
     if (message.content == '+help'){
-        message.reply(`Voici la liste de commandes \n+date \n+time \n+league`)
+        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n`)
         
     }
 
 });
+
+
 
 //leagueperso
 client.on('messageCreate', async message => {
@@ -123,11 +163,11 @@ client.on('messageCreate', async message => {
 
         collector.on('collect', (reaction, reactionCollector) => {
             console.log(reaction.count)
-        if (reaction.count === 2){
+        if (reaction.count === 11){
             reaction.users.remove(client.user.id);
 
         }
-        if (reaction.count === 11) {
+        if (reaction.count === 2) {
             message.channel.send(`${user}, la perso est on!`);
             
            
@@ -139,6 +179,13 @@ client.on('messageCreate', async message => {
     }
 });
 
+
+
+
+
+
+
+
 //nombre de personnes
 client.on('guildMemberAdd', async(member) => {
     await client.channels.cache.get('1194851271052632135').setName(`🌍 Total de personnes: ${member.guild.memberCount}`)
@@ -146,5 +193,30 @@ client.on('guildMemberAdd', async(member) => {
 client.on('guildMemberRemove', async(member) => {
     await client.channels.cache.get('1194851271052632135').setName(`🌍 Total de personnes: ${member.guild.memberCount}`)
 })
+
+
+
+
+//ban
+client.on('messageCreate', (message) => {  
+    if (message.content.startsWith('+kick')) {
+        const member = message.mentions.members.first();
+        
+        if (member) {
+            const memberTarget = message.guild.members.cache.get(member.id);
+            
+            if (memberTarget) {
+                memberTarget.kick();
+                message.channel.send(`${member.user.tag} a été kick avec succès.`);
+            } else {
+                message.channel.send('Impossible de trouver ce membre sur le serveur.');
+            }
+        } else {
+            message.channel.send('Aucun membre mentionné.');
+        }
+    }
+
+});
+
 
 client.login(process.env.TOKEN);
