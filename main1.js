@@ -1,11 +1,12 @@
 require('dotenv').config();
-const {Client, IntentsBitField, userMention} = require("discord.js");
+const {Client, IntentsBitField, userMention, MessageReaction} = require("discord.js");
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
+        IntentsBitField.Flags.GuildMessageReactions,
 
     ]
 });
@@ -103,40 +104,39 @@ client.on('messageCreate', (message) => {
     }
 
 });
+
 //leagueperso
 client.on('messageCreate', async message => {
     if (message.content === '+league') {
-        // Send the poll message
-        const pollMessage = await message.channel.send('Perso league?');
-        
-        // Add the checkmark reaction
-        await pollMessage.react('✅');
-    
-        // Create a filter to check for 2 reactions
-        const filter = (reaction, user) => reaction.emoji.name === '✅';
-        
-        // Set up a collector for reactions
-        const collector = pollMessage.createReactionCollector(filter); // Adjust the time as needed (in milliseconds)
-    
-        // Listen for reactions
-        collector.on('messageCollect', (reaction, user) => {
-            const reactionCount = pollMessage.reactions.cache.get('✅').count;
-            if (reactionCount === 2) {
-                message.channel.send(`${message.author}, la perso est on!`);
-                // Stop the collector to prevent further reactions
-                collector.stop();
-            }
+        let user = message.author
+        const time = 7200000 //amount of time to collect for in milliseconds
+        const emojis = ["💯"]; //the emojis to react
+
+        message.channel.send("Perso league ?") 
+        .then(async function (message) {
+            for (let emoji of emojis) { await message.react(emoji) }
+        const filter = (reaction, user) => {
+            return reaction.emoji.name === '💯' && user.id === message.author.id;
+        };
+
+        const collector = message.createReactionCollector(filter, { time: time });
+
+        collector.on('collect', (reaction, reactionCollector) => {
+            console.log(reaction.count)
+        if (reaction.count === 2){
+            reaction.users.remove(client.user.id);
+
+        }
+        if (reaction.count === 11) {
+            message.channel.send(`${user}, la perso est on!`);
+            
+           
+            collector.stop();
+        }
+            });
         });
     
-        // Listen for the end of the collector (time limit reached)
-        collector.on('messageEnd', collected => {
-            if (collected.size < 2) { 
-                message.channel.send('Pas assez de réactions :(');
-            }
-        });
     }
-    //dw
-    
 });
 
 //nombre de personnes
