@@ -137,7 +137,7 @@ client.on('messageCreate', (message) => {
 
     //help
     if (message.content.toLowerCase() == '+help'){
-        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n+kick \n+ban`)
+        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n+kick \n+ban \n+roulette \n+flex \n+bj \n+money`)
         
     }
 
@@ -147,7 +147,7 @@ client.on('messageCreate', (message) => {
 
 //leagueperso
 client.on('messageCreate', async message => {
-    if (message.content.toLowerCase === '+league') {
+    if (message.content.startsWith('+league')) {
         let user = message.author
         const time = 7200000 //amount of time to collect for in milliseconds
         const emojis = ["💯"]; //the emojis to react
@@ -163,11 +163,11 @@ client.on('messageCreate', async message => {
 
         collector.on('collect', (reaction, reactionCollector) => {
             console.log(reaction.count)
-        if (reaction.count === 11){
+        if (reaction.count === 2){
             reaction.users.remove(client.user.id);
 
         }
-        if (reaction.count === 2) {
+        if (reaction.count === 11) {
             message.channel.send(`${user}, la perso est on!`);
             
            
@@ -179,6 +179,35 @@ client.on('messageCreate', async message => {
     }
 });
 
+
+//roulette
+client.on('messageCreate', (message) => {
+    if (message.content.startsWith('+roulette')) {
+        // Vérifie si l'utilisateur a le rôle spécifié
+        if (message.member.roles.cache.some(role => role.name === 'Collègue✌️')) {
+            const member = message.author; // L'utilisateur qui a utilisé la commande
+
+            // Génère un nombre aléatoire entre 0 et 1
+            const chance = Math.random();
+
+            // Si le nombre est inférieur à 0.5, la personne est kickée
+            if (chance < 0.50) {
+                const memberTarget = message.guild.members.cache.get(member.id);
+                
+                if (memberTarget) {
+                    memberTarget.kick();
+                    message.channel.send(`${member.tag} a été kick avec succès à la roulette.`);
+                } else {
+                    message.channel.send('Impossible de trouver cet utilisateur sur le serveur.');
+                }
+            } else {
+                message.channel.send(`${member.tag} a survécu à la roulette.`);
+            }
+        } else {
+            message.channel.send('Vous n\'avez pas la permission d\'utiliser cette commande.');
+        }
+    }
+});
 
 
 
@@ -198,41 +227,29 @@ client.on('guildMemberRemove', async(member) => {
 
 
 //kick
-client.on('messageCreate', (message) => {  
-    if (message.content.toLowerCase() == 'kick') {
-        // Vérifiez si l'utilisateur a le rôle spécifié (remplacez 'NomDuRole' par le nom du rôle désiré)
+client.on('messageCreate', (message) => {
+    if (message.content.startsWith('+kick')) {
+        
         if (message.member.roles.cache.some(role => role.name === 'Admin')) {
             const member = message.mentions.members.first();
-            
+
             if (member) {
                 const memberTarget = message.guild.members.cache.get(member.id);
-                
+
                 if (memberTarget) {
-                    memberTarget.kick();
-                    message.channel.send(`${member.user.tag} a été kick avec succès.`);
-                } else {
-                    message.channel.send('Impossible de trouver ce membre sur le serveur.');
-                }
-            } else {
-                message.channel.send('Aucun membre mentionné.');
-            }
-        } else {
-            message.channel.send('Vous n\'avez pas la permission d\'utiliser cette commande.');
-        }
-    }
-});
-///
-client.on('messageCreate', (message) => {  
-    if (message.content.toLowerCase() == '+ban') {
-        if (message.member.roles.cache.some(role => role.name === 'Admin')) {
-            const member = message.mentions.members.first();
-            
-            if (member) {
-                const memberTarget = message.guild.members.cache.get(member.id);
-                
-                if (memberTarget) {
-                    memberTarget.kick();
-                    message.channel.send(`${member.user.tag} a été kick avec succès.`);
+                    
+                    message.channel.send('3...');
+                    setTimeout(() => {
+                        message.channel.send('2...');
+                    }, 1000);
+                    setTimeout(() => {
+                        message.channel.send('1...');
+                    }, 2000); 
+                    setTimeout(() => {
+                        
+                        memberTarget.kick();
+                        message.channel.send(`${member.user.tag} a été kick avec succès.`);
+                    }, 3000); 
                 } else {
                     message.channel.send('Impossible de trouver ce membre sur le serveur.');
                 }
@@ -245,6 +262,106 @@ client.on('messageCreate', (message) => {
     }
 });
 
+//ban
+client.on('messageCreate', (message) => {  
+    if (message.content.toLowerCase() == '+ban') {
+        if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+            const member = message.mentions.members.first();
+            
+            if (member) {
+                const memberTarget = message.guild.members.cache.get(member.id);
+                
+                if (memberTarget) {
+                    memberTarget.ban();
+                    message.channel.send(`${member.user.tag} a été ban avec succès.`);
+                } else {
+                    message.channel.send('Impossible de trouver ce membre sur le serveur.');
+                }
+            } else {
+                message.channel.send('Aucun membre mentionné.');
+            }
+        } else {
+            message.channel.send('Vous n\'avez pas la permission d\'utiliser cette commande.');
+        }
+    }
+});
+
+//flex
+client.on('messageCreate', async message => {
+    if (message.content.startsWith('+flex')) {
+        let user = message.author
+        const time = 7200000 //amount of time to collect for in milliseconds
+        const emojis = ["🐶"]; //the emojis to react
+
+        message.channel.send("Flex ?") 
+        .then(async function (message) {
+            for (let emoji of emojis) { await message.react(emoji) }
+        const filter = (reaction, user) => {
+            return reaction.emoji.name === '🐶' && user.id === message.author.id;
+        };
+
+        const collector = message.createReactionCollector(filter, { time: time });
+
+        collector.on('collect', (reaction, reactionCollector) => {
+            console.log(reaction.count)
+        if (reaction.count === 2){
+            reaction.users.remove(client.user.id);
+
+        }
+        if (reaction.count === 6) {
+            message.channel.send(`${user}, la flex est on!`);
+            
+           
+            collector.stop();
+        }
+            });
+        });
+    
+    }
+});
+
+//blackjack
+const prefix = '+';
+const pointsMap = new Map();
+
+client.on('messageCreate', (message) => {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const command = args.shift().toLowerCase();
+
+    if (command === 'bj') {
+        // Vérifie si l'utilisateur a déjà des points, sinon initialise à 0
+        const userPoints = pointsMap.get(message.author.id) || 0;
+
+        // Simule une partie de blackjack
+        const gainOrLoss = Math.random() < 0.5 ? -Math.floor(Math.random() * 21) : Math.floor(Math.random() * 21) + 1;
+        const newPoints = userPoints + gainOrLoss;
+
+        if (gainOrLoss < 0) {
+            message.reply(`Vous avez perdu ${Math.abs(gainOrLoss)}$. Votre total est maintenant de ${newPoints}$`);
+
+            if (newPoints <= -50) {
+                
+                const memberTarget = message.guild.members.cache.get(message.author.id);
+                memberTarget.kick();
+                message.channel.send(`${message.author.tag} a été kické car IL EST DAWG.`);
+                
+                
+                pointsMap.delete(message.author.id);
+            }
+        } else {
+            message.reply(`Vous avez gagné ${gainOrLoss}$. Votre total est maintenant de ${newPoints}$.`);
+        }
+
+        pointsMap.set(message.author.id, newPoints);
+    } else if (command === 'money') {
+       
+        const userPoints = pointsMap.get(message.author.id) || 0;
+
+        message.reply(`Vous avez actuellement ${userPoints}$.`);
+    }
+});
 
 
 client.login(process.env.TOKEN);
