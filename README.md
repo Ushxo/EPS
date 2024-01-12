@@ -1,2 +1,2 @@
 README officiel du EPS Bot.
-Utiliser le symbole "+" avec un des commandes pour l'utiliser.
+Utiliser le symbole "+" avec une des commandes pour l'utiliser.
