@@ -7,7 +7,7 @@ const client = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.GuildMessageReactions,
-        IntentsBitField.Flags.GuildBans
+        IntentsBitField.Flags.GuildBans,
 
     ]
 });
@@ -55,7 +55,7 @@ client.on('messageCreate', (message) => {
 
 
     //temps
-    if(message.content == '+time') {
+    if(message.content.toLowerCase() == '+time') {
         let date = new Date();
         
         let content = 'Il est ' + date.getHours() + 'h:' + date.getMinutes() + 'm' + date.getSeconds() + 's';
@@ -73,7 +73,7 @@ client.on('messageCreate', (message) => {
 
 
     //date
-    if(message.content == '+date') {
+    if(message.content.toLowerCase() == '+date') {
         let date = new Date();
         // Send date
         let date1 = date.getMonth() + 1
@@ -136,8 +136,8 @@ client.on('messageCreate', (message) => {
 
 
     //help
-    if (message.content == '+help'){
-        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n`)
+    if (message.content.toLowerCase() == '+help'){
+        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n+kick \n+ban`)
         
     }
 
@@ -147,7 +147,7 @@ client.on('messageCreate', (message) => {
 
 //leagueperso
 client.on('messageCreate', async message => {
-    if (message.content === '+league') {
+    if (message.content.toLowerCase === '+league') {
         let user = message.author
         const time = 7200000 //amount of time to collect for in milliseconds
         const emojis = ["💯"]; //the emojis to react
@@ -197,26 +197,54 @@ client.on('guildMemberRemove', async(member) => {
 
 
 
-//ban
+//kick
 client.on('messageCreate', (message) => {  
-    if (message.content.startsWith('+kick')) {
-        const member = message.mentions.members.first();
-        
-        if (member) {
-            const memberTarget = message.guild.members.cache.get(member.id);
+    if (message.content.toLowerCase() == 'kick') {
+        // Vérifiez si l'utilisateur a le rôle spécifié (remplacez 'NomDuRole' par le nom du rôle désiré)
+        if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+            const member = message.mentions.members.first();
             
-            if (memberTarget) {
-                memberTarget.kick();
-                message.channel.send(`${member.user.tag} a été kick avec succès.`);
+            if (member) {
+                const memberTarget = message.guild.members.cache.get(member.id);
+                
+                if (memberTarget) {
+                    memberTarget.kick();
+                    message.channel.send(`${member.user.tag} a été kick avec succès.`);
+                } else {
+                    message.channel.send('Impossible de trouver ce membre sur le serveur.');
+                }
             } else {
-                message.channel.send('Impossible de trouver ce membre sur le serveur.');
+                message.channel.send('Aucun membre mentionné.');
             }
         } else {
-            message.channel.send('Aucun membre mentionné.');
+            message.channel.send('Vous n\'avez pas la permission d\'utiliser cette commande.');
         }
     }
-
 });
+///
+client.on('messageCreate', (message) => {  
+    if (message.content.toLowerCase() == '+ban') {
+        if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+            const member = message.mentions.members.first();
+            
+            if (member) {
+                const memberTarget = message.guild.members.cache.get(member.id);
+                
+                if (memberTarget) {
+                    memberTarget.kick();
+                    message.channel.send(`${member.user.tag} a été kick avec succès.`);
+                } else {
+                    message.channel.send('Impossible de trouver ce membre sur le serveur.');
+                }
+            } else {
+                message.channel.send('Aucun membre mentionné.');
+            }
+        } else {
+            message.channel.send('Vous n\'avez pas la permission d\'utiliser cette commande.');
+        }
+    }
+});
+
 
 
 client.login(process.env.TOKEN);
