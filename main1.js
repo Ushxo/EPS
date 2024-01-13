@@ -147,37 +147,43 @@ client.on('messageCreate', (message) => {
 
 //leagueperso
 client.on('messageCreate', async message => {
-    if (message.content.startsWith('+league')) {
-        let user = message.author
-        const time = 7200000 //amount of time to collect for in milliseconds
-        const emojis = ["💯"]; //the emojis to react
+    if (message.content.match(/^\+league \d+$/)) {
+        let user = message.author;
+        const time = 7200000; // amount of time to collect for in milliseconds
+        const emojis = ["💯"]; // the emojis to react
 
-        message.channel.send("Perso league ?") 
-        .then(async function (message) {
-            for (let emoji of emojis) { await message.react(emoji) }
-        const filter = (reaction, user) => {
-            return reaction.emoji.name === '💯' && user.id === message.author.id;
-        };
+        // Extracting the hour from the command
+        const specifiedHour = parseInt(message.content.split(' ')[1]);
 
-        const collector = message.createReactionCollector(filter, { time: time });
+        // Check if the specified hour is a valid number
+        if (!isNaN(specifiedHour) && specifiedHour >= 0 && specifiedHour <= 23) {
+            message.channel.send(`Perso league à ${specifiedHour}h ? ${message.guild.roles.cache.find(role => role.name === 'League')}`)
+                .then(async function (message) {
+                    for (let emoji of emojis) { await message.react(emoji); }
 
-        collector.on('collect', (reaction, reactionCollector) => {
-            console.log(reaction.count)
-        if (reaction.count === 2){
-            reaction.users.remove(client.user.id);
+                    const filter = (reaction, user) => {
+                        return reaction.emoji.name === '💯' && user.id === message.author.id;
+                    };
 
+                    const collector = message.createReactionCollector(filter, { time: time });
+
+                    collector.on('collect', (reaction, reactionCollector) => {
+                        console.log(reaction.count)
+                        if (reaction.count === 2) {
+                            reaction.users.remove(client.user.id);
+                        }
+                        if (reaction.count === 11) {
+                            message.channel.send(`${user}, la perso est on à ${specifiedHour}h !`);
+                            collector.stop();
+                        }
+                    });
+                });
+        } else {
+            message.channel.send(`${user}, veuillez spécifier une heure valide (0-23) après la commande.`);
         }
-        if (reaction.count === 11) {
-            message.channel.send(`${user}, la perso est on!`);
-            
-           
-            collector.stop();
-        }
-            });
-        });
-    
     }
 });
+
 
 
 //roulette
