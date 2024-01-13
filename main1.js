@@ -147,13 +147,13 @@ client.on('messageCreate', (message) => {
 
 //leagueperso
 client.on('messageCreate', async message => {
-    if (message.content.match(/^\+league \d+$/)) {
+    if (message.content.startsWith('+league')) {
         let user = message.author;
         const time = 7200000; // amount of time to collect for in milliseconds
         const emojis = ["💯"]; // the emojis to react
 
-        // Extracting the hour from the command
-        const specifiedHour = parseInt(message.content.split(' ')[1]);
+        // Extracting the hour from the command, defaulting to 19 if not specified
+        const specifiedHour = parseInt(message.content.split(' ')[1]) || 19;
 
         // Check if the specified hour is a valid number
         if (!isNaN(specifiedHour) && specifiedHour >= 0 && specifiedHour <= 23) {
@@ -183,6 +183,7 @@ client.on('messageCreate', async message => {
         }
     }
 });
+
 
 
 
