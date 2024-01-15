@@ -198,17 +198,39 @@ client.on('messageCreate', (message) => {
             const chance = Math.random();
 
             
-            if (chance < 0.50) {
+            if (chance < 0.5) {
                 const memberTarget = message.guild.members.cache.get(member.id);
                 
                 if (memberTarget) {
-                    memberTarget.kick();
-                    message.channel.send(`${member.tag} a été kick avec succès à la roulette.`);
+                    message.channel.send('3...');
+                    setTimeout(() => {
+                        message.channel.send('2...');
+                    }, 1000);
+                    setTimeout(() => {
+                        message.channel.send('1...');
+                    }, 2000); 
+                    setTimeout(() => {
+                        
+                        memberTarget.kick();
+                        message.channel.send(`${member.tag} a été kick avec succès à la roulette.`);
+                    }, 3000); 
                 } else {
+                    
                     message.channel.send('Impossible de trouver cet utilisateur sur le serveur.');
                 }
             } else {
-                message.channel.send(`${member.tag} a survécu à la roulette.`);
+                message.channel.send('3...');
+                setTimeout(() => {
+                    message.channel.send('2...');
+                }, 1000);
+                setTimeout(() => {
+                    message.channel.send('1...');
+                }, 2000); 
+                setTimeout(() => {
+                    
+                    message.channel.send(`${member.tag} a survécu la roulette.`);
+                }, 3000); 
+                    
             }
         } else {
             message.channel.send('Vous n\'avez pas la permission d\'utiliser cette commande.');
@@ -271,7 +293,7 @@ client.on('messageCreate', (message) => {
 
 //ban
 client.on('messageCreate', (message) => {  
-    if (message.content.toLowerCase() == '+ban') {
+    if (message.content.startsWith('+ban')) {
         if (message.member.roles.cache.some(role => role.name === 'Admin')) {
             const member = message.mentions.members.first();
             
