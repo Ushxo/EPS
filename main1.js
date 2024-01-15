@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {Client, IntentsBitField, userMention, MessageReaction} = require("discord.js");
+const {Client, IntentsBitField, userMention, MessageReaction, MessageEmbed} = require("discord.js");
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -11,11 +11,6 @@ const client = new Client({
 
     ]
 });
-
-
-
-
-
 
 
 
@@ -193,8 +188,6 @@ client.on('messageCreate', (message) => {
         
         if (message.member.roles.cache.some(role => role.name === 'Collègue✌️')) {
             const member = message.author; 
-
-            
             const chance = Math.random();
 
             
@@ -373,11 +366,12 @@ client.on('messageCreate', (message) => {
             if (newPoints <= -50) {
                 
                 const memberTarget = message.guild.members.cache.get(message.author.id);
+                
                 memberTarget.kick();
                 message.channel.send(`${message.author.tag} a été kické car IL EST DAWG.`);
-                
-                
+
                 pointsMap.delete(message.author.id);
+                
             }
         } else {
             message.reply(`Vous avez gagné ${gainOrLoss}$. Votre total est maintenant de ${newPoints}$.`);
@@ -389,6 +383,74 @@ client.on('messageCreate', (message) => {
         const userPoints = pointsMap.get(message.author.id) || 0;
 
         message.reply(`Vous avez actuellement ${userPoints}$.`);
+    }
+});
+
+//générateur d'image (standby)
+const PREFIX = '+'
+
+//role assign FIFA, League, Rocket
+client.on('messageCreate', async (message) => {
+    if (message.author.bot) return;
+    if (!message.content.startsWith(PREFIX)) return;
+
+    const args = message.content.slice(PREFIX.length).trim().split(/ +/);
+    const command = args.shift().toLowerCase();
+
+    if (command === 'roles') {
+
+        if (!message.member.roles.cache.has('1100968323170173038')) {
+            return message.channel.send("Vous n'avez pas la permission d'utiliser cette commande.");
+        }
+
+        const pollMessage = await message.channel.send('Sélectionnez votre jeu : 1️⃣ League, 2️⃣ FIFA, 3️⃣ Rocket');
+
+
+        await pollMessage.react('1️⃣');
+        await pollMessage.react('2️⃣');
+        await pollMessage.react('3️⃣');
+
+        const filter = (reaction, user) => {
+            return ['1️⃣', '2️⃣', '3️⃣'].includes(reaction.emoji.name) && user.id === message.author.id;
+        };
+
+        const collector = pollMessage.createReactionCollector({ filter, dispose: true });
+
+        collector.on('collect', (reaction, user) => {
+            const member = reaction.message.guild.members.cache.get(user.id);
+
+            switch (reaction.emoji.name) {
+                case '1️⃣':
+                    member.roles.add('1135028672047349841');
+                    break;
+                case '2️⃣':
+                    member.roles.add('1128435042922811443');
+                    break;
+                case '3️⃣':
+                    member.roles.add('1161082266345295882');
+                    break;
+            }
+
+            console.log('Rôle attribué avec succès!');
+        });
+
+        collector.on('remove', (reaction, user) => {
+            const member = reaction.message.guild.members.cache.get(user.id);
+
+            switch (reaction.emoji.name) {
+                case '1️⃣':
+                    member.roles.remove('1135028672047349841');
+                    break;
+                case '2️⃣':
+                    member.roles.remove('1128435042922811443');
+                    break;
+                case '3️⃣':
+                    member.roles.remove('1161082266345295882');
+                    break;
+            }
+
+            console.log('Rôle retiré avec succès!');
+        });
     }
 });
 
