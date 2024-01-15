@@ -132,7 +132,7 @@ client.on('messageCreate', (message) => {
 
     //help
     if (message.content.toLowerCase() == '+help'){
-        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n+kick \n+ban \n+roulette \n+flex \n+bj \n+money`)
+        message.reply(`Voici la liste de commandes \n+date \n+time \n+league \n+kick(admin seulement) \n+ban(admin seulement) \n+roulette \n+flex \n+bj \n+money \n+roles(admin seulement)`)
         
     }
 
@@ -411,7 +411,7 @@ client.on('messageCreate', async (message) => {
         await pollMessage.react('3️⃣');
 
         const filter = (reaction, user) => {
-            return ['1️⃣', '2️⃣', '3️⃣'].includes(reaction.emoji.name) && user.id === message.author.id;
+            return ['1️⃣', '2️⃣', '3️⃣'].includes(reaction.emoji.name);
         };
 
         const collector = pollMessage.createReactionCollector({ filter, dispose: true });
