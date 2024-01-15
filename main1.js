@@ -149,13 +149,13 @@ client.on('messageCreate', (message) => {
 client.on('messageCreate', async message => {
     if (message.content.startsWith('+league')) {
         let user = message.author;
-        const time = 7200000; // amount of time to collect for in milliseconds
-        const emojis = ["💯"]; // the emojis to react
+        const time = 7200000; 
+        const emojis = ["💯"]; 
 
-        // Extracting the hour from the command, defaulting to 19 if not specified
+        
         const specifiedHour = parseInt(message.content.split(' ')[1]) || 19;
 
-        // Check if the specified hour is a valid number
+        
         if (!isNaN(specifiedHour) && specifiedHour >= 0 && specifiedHour <= 23) {
             message.channel.send(`Perso league à ${specifiedHour}h ? ${message.guild.roles.cache.find(role => role.name === 'League')}`)
                 .then(async function (message) {
@@ -190,14 +190,14 @@ client.on('messageCreate', async message => {
 //roulette
 client.on('messageCreate', (message) => {
     if (message.content.startsWith('+roulette')) {
-        // Vérifie si l'utilisateur a le rôle spécifié
+        
         if (message.member.roles.cache.some(role => role.name === 'Collègue✌️')) {
-            const member = message.author; // L'utilisateur qui a utilisé la commande
+            const member = message.author; 
 
-            // Génère un nombre aléatoire entre 0 et 1
+            
             const chance = Math.random();
 
-            // Si le nombre est inférieur à 0.5, la personne est kickée
+            
             if (chance < 0.50) {
                 const memberTarget = message.guild.members.cache.get(member.id);
                 
@@ -297,8 +297,8 @@ client.on('messageCreate', (message) => {
 client.on('messageCreate', async message => {
     if (message.content.startsWith('+flex')) {
         let user = message.author
-        const time = 7200000 //amount of time to collect for in milliseconds
-        const emojis = ["🐶"]; //the emojis to react
+        const time = 7200000 
+        const emojis = ["🐶"]; 
 
         message.channel.send("Flex ?") 
         .then(async function (message) {
@@ -338,10 +338,10 @@ client.on('messageCreate', (message) => {
     const command = args.shift().toLowerCase();
 
     if (command === 'bj') {
-        // Vérifie si l'utilisateur a déjà des points, sinon initialise à 0
+        
         const userPoints = pointsMap.get(message.author.id) || 0;
 
-        // Simule une partie de blackjack
+        
         const gainOrLoss = Math.random() < 0.5 ? -Math.floor(Math.random() * 21) : Math.floor(Math.random() * 21) + 1;
         const newPoints = userPoints + gainOrLoss;
 
