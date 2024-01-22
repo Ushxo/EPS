@@ -453,6 +453,6 @@ client.on('messageCreate', async (message) => {
         });
     }
 });
-
+// origin
 
 client.login(process.env.TOKEN);
